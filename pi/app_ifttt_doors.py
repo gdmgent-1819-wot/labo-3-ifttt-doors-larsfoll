@@ -1,4 +1,5 @@
 from sense_hat import SenseHat
+import sys
 import requests
 
 sense = SenseHat()
@@ -63,7 +64,7 @@ try:
 
 
 except:
-    exit()
+    sys.exit(1)
 
 while True:
     for event in sense.stick.get_events():
