@@ -31,7 +31,6 @@ def openFrontDoor():
     sense.set_pixel(0, 5, 0, 255, 0)
     sense.set_pixel(0, 6, 0, 255, 0)
     sense.set_pixel(0, 7, 0, 255, 0)
-    post_ifttt_webhook('joystick_pushed', action, direction)
 
 
 def closeFrontDoor():
@@ -48,12 +47,19 @@ def closeBackDoor():
     sense.set_pixel(7, 5, 255, 0, 0)
     sense.set_pixel(7, 6, 255, 0, 0)
     sense.set_pixel(7, 7, 255, 0, 0)
+    
+def sendSensorData():
+    temp = sense.get_temperature()
+    humidity = sense.get_humidity()
+    post_ifttt_webhook('joystick_pressed', temp, humidity)
 
 try:
     sense.set_pixels(home)
     sense.stick.direction_up = openFrontDoor
     sense.stick.direction_down = closeFrontDoor
-
+    sense.stick.direction_left = openBackDoor
+    sense.stick.direction_right = closeBackDoor
+    sense.stick.direction_middle = sendSensorData
 
 
 except:
@@ -63,4 +69,5 @@ while True:
     for event in sense.stick.get_events():
         action = format(event.action)
         direction = format(event.direction)
+        post_ifttt_webhook('joystick_pushed', action, direction)
     pass
